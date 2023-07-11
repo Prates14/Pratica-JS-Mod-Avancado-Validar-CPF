@@ -1,45 +1,53 @@
-function EnvioDoCpf(codigo){
+//Função construtora que retorna o valor do usuário (apenas a numeração)
+function EnvioDoCpf(codigo) {
   Object.defineProperty(this, 'codLimpo', {
     enumerable: true,
-    get: function(){
+    get: function () {
       return codigo.replace(/\D+/g, '')
     }
   })
+  this.AvaliarCpf()
 }
 
-EnvioDoCpf.prototype.AvaliarCpf = function() {
-  if(typeof this.codLimpo === 'undefined') return false
-  if(this.codLimpo.length !== 11) return false
+//Função que vai Validar o CPF do usuário 
+EnvioDoCpf.prototype.AvaliarCpf = function () {
+  if (typeof this.codLimpo === 'undefined') return false
+  if (this.codLimpo.length !== 11) return false
 
   const cpfParcial = this.codLimpo.slice(0, -2)
   const digito1 = this.cpfToArray(cpfParcial)
-  return true
+  const resultado = this.calcPorDuasEtapas(digito1)
+
+  //Validaçãoi final do CPF
+  if (this.codLimpo !== resultado) return console.log('CPF inválido')
+  return console.log('CPF válido')
 }
 
-EnvioDoCpf.prototype.cpfToArray = function(cpfParcial) {
+//Função que retorna o CPF em Array
+EnvioDoCpf.prototype.cpfToArray = function (cpfParcial) {
   const cpfArray = Array.from(cpfParcial)
-  console.log(cpfArray)
+  return cpfArray
 }
 
-const usuario = new EnvioDoCpf('159.737.846-14')
-console.log(usuario.codLimpo)
-console.log(usuario.AvaliarCpf())
+//Função que realiza o calculo de validação e retorna o resultado do mesmo para a validação final
+EnvioDoCpf.prototype.calcPorDuasEtapas = function (digito1) {
+  //Primeira etapa do calculo
+  let calculo1 = [...digito1]
+  const res1 = calculo1.reduce((acumulador, valor, indice) => acumulador += (Number(valor) * (10 - indice)), 0)
+  const penultimoNum = (11 - (res1 % 11))
+  //Segunda etapa do calculo
+  let calculo2 = [...digito1, penultimoNum]
+  const res2 = calculo2.reduce((acumulador, valor, indice) => acumulador += (Number(valor) * (11 - indice)), 0)
+  const ultimoNum = (11 - (res2 % 11))
+  //Resultado final do calculo
+  const res3 = [...calculo2, ultimoNum]
+  const resultadoFinal = res3.reduce(function (ac, val) {
+    ac += val
+    return ac
+  }, [])
+  return resultadoFinal
+}
 
-
-
-
-
-//1- função constr que pega o cpf em string e tira os pontos deixando apenas numeros ((ok))
-//2- if(ter 11 numeros) retornar true se nao retornar false; if(typeof do cpf for undefined) retornar false (())
-//3- pegar o cpf limpo e transforma-lo em um array (())
-//4- realizar o calculo.....
-
-
-
-// function cpf(cpf) {
-//   let CPF = cpf
-//   let cpfLimpo = cpf.replace(/\D+/g, '')
-//   cpfArray = Array.from(cpfLimpo)
-// }
-// cpf('705.484.450-52')
-// console.log(cpfArray.reduce((ac, val) => ac + Number(val), 0))
+//CPF dos usuários
+const usuario1 = new EnvioDoCpf('242.863.650-26')
+const usuario2 = new EnvioDoCpf('809.783.640-82')
