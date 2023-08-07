@@ -3,15 +3,14 @@ class EnvioDoCpf {
     constructor(codigo) {
         Object.defineProperty(this, 'codLimpo', {
             enumerable: true,
-            get: () => codigo.replace(/\D+/g, '')
+            value: codigo.replace(/\D+/g, '')
         })
-        this.AvaliarCpf()
     }
 
     //Função que vai Validar o CPF do usuário
     AvaliarCpf() {
         if (typeof this.codLimpo === 'undefined') return false
-        if (this.codLimpo !== 11) return false
+        if (this.codLimpo.length !== 11) return false
 
         const cpfParcial = this.codLimpo.slice(0, -2)
         const digito1 = this.cpfToArray(cpfParcial)
@@ -54,3 +53,5 @@ class EnvioDoCpf {
 //CPF dos usuários
 const usuario1 = new EnvioDoCpf('242.863.650-26')
 const usuario2 = new EnvioDoCpf('070.987.720-03')
+usuario1.AvaliarCpf()
+usuario2.AvaliarCpf()
