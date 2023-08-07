@@ -18,7 +18,7 @@ EnvioDoCpf.prototype.AvaliarCpf = function () {
   const digito1 = this.cpfToArray(cpfParcial)
   const resultado = this.calcPorDuasEtapas(digito1)
 
-  //Validaçãoi final do CPF
+  //Validação final do CPF
   if (this.codLimpo !== resultado) return console.log('CPF inválido')
   return console.log('CPF válido')
 }
